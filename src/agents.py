@@ -4,11 +4,11 @@ from crewai_tools import SerperDevTool
 from custom_tools import RedditSearchTool
 
 # 1. Setup LLM
-api_key_ref = os.getenv("GEMINI_API_KEY")
+api_key_ref = os.getenv("OPENAI_API_KEY")
 print(f"API Key loaded: {api_key_ref[:10]}..." if api_key_ref else "API Key NOT found!")
-gemini_llm = LLM(
-    model="gemini/gemini-2.0-flash",
-    api_key=os.getenv("GEMINI_API_KEY")
+openai_llm = LLM(
+    model="openai/gpt-4o-mini",
+    api_key=os.getenv("OPENAI_API_KEY")
 )
 
 # 2. Setup Tools
@@ -26,7 +26,7 @@ class SoccerAgents:
                 "You look for high upvote counts on Reddit and 'Breaking' tags on news."
             ),
             tools=[reddit_search, google_search], # Giving it both tools
-            llm=gemini_llm,
+            llm=openai_llm,
             verbose=True
         )
 
@@ -40,6 +40,6 @@ class SoccerAgents:
                 "You DO NOT summarize. You preserve the original headlines and image URLs. "
                 "You want the reader to see exactly what the internet sees."
             ),
-            llm=gemini_llm,
+            llm=openai_llm,
             verbose=True
         )
