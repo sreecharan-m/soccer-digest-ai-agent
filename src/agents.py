@@ -7,7 +7,7 @@ from custom_tools import RedditSearchTool
 api_key_ref = os.getenv("GEMINI_API_KEY")
 print(f"API Key loaded: {api_key_ref[:10]}..." if api_key_ref else "API Key NOT found!")
 gemini_llm = LLM(
-    model="gemini/gemini-2.5-flash",
+    model="gemini/gemini-2.5-pro",
     api_key=os.getenv("GEMINI_API_KEY")
 )
 
