@@ -4,11 +4,11 @@ from crewai_tools import SerperDevTool
 from custom_tools import RedditSearchTool
 
 # 1. Setup LLM
-api_key = os.getenv("GEMINI_API_KEY")
-print(f"API Key loaded: {api_key[:10]}..." if api_key else "API Key NOT found!")
+api_key_ref = os.getenv("GEMINI_API_KEY")
+print(f"API Key loaded: {api_key_ref[:10]}..." if api_key_ref else "API Key NOT found!")
 gemini_llm = LLM(
     model="gemini/gemini-2.5-flash",
-    api_key=api_key
+    api_key=os.getenv("GEMINI_API_KEY")
 )
 
 # 2. Setup Tools
