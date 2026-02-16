@@ -1,0 +1,41 @@
+name: Daily Soccer Digest
+
+on:
+  schedule:
+    # Runs at 12:00 UTC every day (which is 7:00 AM EST / 5:30 PM IST)
+    # You can change this using https://crontab.guru/
+    - cron: '0 12 * * *'
+  
+  # Allows you to run this workflow manually from the Actions tab for testing
+  workflow_dispatch:
+
+jobs:
+  run-soccer-agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Set up Python
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. Install libraries
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Run the Agent
+      - name: Run AI Agent
+        env:
+          # We map the GitHub Secrets to the Environment Variables the script expects
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+        run: python src/main.py
