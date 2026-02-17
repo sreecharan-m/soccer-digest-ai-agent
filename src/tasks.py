@@ -4,10 +4,11 @@ class SoccerTasks:
     def fetch_trends(self, agent, interests):
         return Task(
             description=(
-                f"1. Use the Reddit Tool to search subreddits: {interests} (e.g. 'soccer,reddevils,realmadrid'). "
-                "2. Use Google Search with queries like 'site:twitter.com viral football', 'site:instagram.com football memes', or 'trending football memes today'."
-                "3. Collect at least 30 items. "
-                "4. Make sure to capture the IMAGE URLs and direct links."
+                f"1. Use the 'Google News Search' (news_tool) tool with this exact query: '{interests}'. "
+                "2. Use the 'Google Image Search' (image_tool) tool with this exact query: '{interests}'."
+                "3. Collect at least 30 items."
+                "4. Make sure to capture the IMAGE URLs. Ensure you have a mix of News (text) and Memes (Images)."
+                "5. As last priority if reddit search returns any result, use it to search subreddits: {interests} (e.g. 'soccer,reddevils,realmadrid'). "
             ),
             expected_output="A raw list of 30 potential viral posts with their scores, headlines, and image URLs.",
             agent=agent

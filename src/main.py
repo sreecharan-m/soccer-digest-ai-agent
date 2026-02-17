@@ -83,7 +83,7 @@ def send_email_blast(html_content):
 def main():
     # 1. Define your interests
     # You can customize this list to change what the agent hunts for
-    interests = "reddevils,RealMadrid,soccercirclejerk,PremierLeague"
+    interests = "reddevils,RealMadrid,soccercirclejerk,PremierLeague, bayern munich, transfers, manchester united, soccer, football memes, soccer memes"
 
     # 2. Instantiate Agents & Tasks
     agents = SoccerAgents()

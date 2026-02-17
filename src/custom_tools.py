@@ -1,8 +1,114 @@
 import requests
 import json
 import random
+import os
 from crewai.tools import BaseTool
 
+class GoogleImageSearchTool(BaseTool):
+    name: str = "Google Image Search (Targeted)"
+    description: str = (
+        "Searches Google Images for specific memes and viral photos based on user interests. "
+        "Input should be a comma-separated string of teams/topics (e.g., 'Man Utd, Real Madrid'). "
+        "Returns a list of image URLs and titles."
+    )
+
+    def _run(self, query: str) -> str:
+        api_key = os.getenv("SERPER_API_KEY")
+        url = "https://google.serper.dev/images"
+        headers = {
+            'X-API-KEY': api_key,
+            'Content-Type': 'application/json'
+        }
+        
+        # 1. Split interests (e.g., "Man Utd, Real Madrid" -> ["Man Utd", "Real Madrid"])
+        interests = [i.strip() for i in query.split(',')]
+        # Always add a generic fallback
+        if "football memes" not in interests:
+            interests.append("football memes")
+
+        results_list = []
+
+        print(f"🎨 Searching Images for: {interests}")
+
+        # 2. Loop through each interest
+        for interest in interests:
+            # We add keywords to make the search viral-focused
+            search_query = f"{interest} funny memes viral 2026"
+            
+            payload = json.dumps({"q": search_query, "num": 5}) # Get top 5 per topic
+
+            try:
+                response = requests.request("POST", url, headers=headers, data=payload)
+                data = response.json()
+                
+                if 'images' in data:
+                    for img in data['images']:
+                        results_list.append(
+                            f"--- IMAGE RESULT ---\n"
+                            f"TOPIC: {interest}\n"
+                            f"TITLE: {img.get('title')}\n"
+                            f"IMAGE_URL: {img.get('imageUrl')}\n"
+                            f"SOURCE: {img.get('source')}\n"
+                            f"--------------------\n"
+                        )
+            except Exception as e:
+                print(f"❌ Error searching images for {interest}: {e}")
+                continue
+
+        # 3. Shuffle so the email isn't just 5 Man Utd memes then 5 Real Madrid memes
+        random.shuffle(results_list)
+        return "\n".join(results_list)
+
+
+class GoogleNewsSearchTool(BaseTool):
+    name: str = "Google News Search (Targeted)"
+    description: str = (
+        "Searches Google News for specific breaking stories based on user interests. "
+        "Input should be a comma-separated string of teams/topics. "
+        "Returns headlines, snippets, and links."
+    )
+
+    def _run(self, query: str) -> str:
+        api_key = os.getenv("SERPER_API_KEY")
+        url = "https://google.serper.dev/search"
+        headers = {
+            'X-API-KEY': api_key,
+            'Content-Type': 'application/json'
+        }
+        
+        interests = [i.strip() for i in query.split(',')]
+        results_list = []
+
+        print(f"📰 Searching News for: {interests}")
+
+        for interest in interests:
+            # We look for news from the last 24 hours
+            search_query = f"{interest} latest football news"
+            
+            # 'tbs': 'qdr:d' means "Query Date Range: Day" (Last 24 hours)
+            payload = json.dumps({"q": search_query, "num": 5, "tbs": "qdr:d"})
+
+            try:
+                response = requests.request("POST", url, headers=headers, data=payload)
+                data = response.json()
+                
+                if 'organic' in data:
+                    for item in data['organic']:
+                        results_list.append(
+                            f"--- NEWS ITEM ---\n"
+                            f"TOPIC: {interest}\n"
+                            f"HEADLINE: {item.get('title')}\n"
+                            f"LINK: {item.get('link')}\n"
+                            f"SNIPPET: {item.get('snippet')}\n"
+                            f"-----------------\n"
+                        )
+            except Exception as e:
+                print(f"❌ Error searching news for {interest}: {e}")
+                continue
+
+        random.shuffle(results_list)
+        return "\n".join(results_list)
+    
 class RedditSearchTool(BaseTool):
     name: str = "Reddit Trend Search"
     description: str = (
