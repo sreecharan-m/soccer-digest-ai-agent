@@ -151,3 +151,19 @@ Because the tools are general-purpose Google Search connectors, you can turn thi
 
 ✈️ Aviation Industry News Bot
 ```
+
+```mermaid
+
+graph TD
+    A[GitHub Actions <br> Daily Cron] -->|Triggers| B(CrewAI Orchestrator)
+    B -->|Powered by| C{OpenAI GPT-4o-mini}
+    
+    B --> D[🕵️‍♂️ Hunter Agent]
+    D -->|Search| E[Serper API: News]
+    D -->|Search| F[Serper API: Images]
+    
+    B --> G[🧑‍🎨 Curator Agent]
+    G -->|Formats| H[HTML Digest]
+    
+    H --> I[📧 Gmail SMTP]
+    I -->|Delivers| J[📬 User Inbox]
